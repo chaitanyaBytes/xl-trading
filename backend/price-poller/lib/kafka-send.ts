@@ -1,0 +1,19 @@
+import { producer } from "@xl-trading/common";
+import { type Tick } from "./types";
+
+export async function sendTicksToKafka(tickData: Tick) {
+  try {
+    await producer.send({
+      topic: "ticks",
+      messages: [
+        {
+          key: tickData.symbol,
+          value: JSON.stringify(tickData),
+          timestamp: tickData.ts.toString(),
+        },
+      ],
+    });
+  } catch (error: any) {
+    console.log("Error sending tick data to kafka: ", error.message);
+  }
+}

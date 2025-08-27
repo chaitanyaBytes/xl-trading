@@ -1,11 +1,5 @@
-export type BookTicker = {
-  s: string; // symbol
-  b: string; // best bid price
-  B: string; // bid qty
-  a: string; // best ask price
-  A: string; // ask qty
-  u?: number;
-};
+import { sendTicksToKafka } from "./kafka-send";
+import type { BookTicker, Tick } from "./types";
 
 export const PricePoller = (pairs: string[]) => {
   const streams = pairs
@@ -27,7 +21,7 @@ export const PricePoller = (pairs: string[]) => {
       }, 30_000);
     };
 
-    ws.onmessage = (event) => {
+    ws.onmessage = async (event) => {
       try {
         const parsedData = JSON.parse(event.data);
 
@@ -46,6 +40,17 @@ export const PricePoller = (pairs: string[]) => {
           tickerData.a,
           tickerData.A
         );
+
+        const tickData: Tick = {
+          ts: Date.now(),
+          symbol: tickerData.s,
+          bidPrice: parseFloat(tickerData.b),
+          bidQty: parseFloat(tickerData.B),
+          askPrice: parseFloat(tickerData.a),
+          askQty: parseFloat(tickerData.A),
+        };
+
+        await sendTicksToKafka(tickData);
       } catch {}
     };
 
