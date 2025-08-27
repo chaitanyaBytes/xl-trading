@@ -1,5 +1,5 @@
 {
-  "name": "common",
+  "name": "@xl-trading/common",
   "module": "index.ts",
   "type": "module",
   "private": true,
