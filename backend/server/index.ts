@@ -1,12 +1,9 @@
 import express from "express";
 import type { Request, Response, Application } from "express";
 import cors, { type CorsOptions } from "cors";
-import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import { PORT, NODE_ENV, DEVELOPMENT_URL, PRODUCTION_URL } from "./config";
 import userRouter from "./routes/user";
-
-dotenv.config();
 
 const app: Application = express();
 
