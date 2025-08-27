@@ -10,6 +10,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "kafkajs": "^2.2.4",
     "zod": "^4.1.3"
   }
 }
