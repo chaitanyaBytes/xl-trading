@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "server"
+    "server",
+    "price-poller"
   ],
   "scripts": {
     "dev": "bun run --filter='*' dev",
