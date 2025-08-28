@@ -1,10 +1,8 @@
 import { sendTicksToKafka } from "./kafka-send";
-import type { BookTicker, Tick } from "./types";
+import type { Trade, Tick } from "./types";
 
 export const PricePoller = (pairs: string[]) => {
-  const streams = pairs
-    .map((p) => `${p.toLocaleLowerCase()}@bookTicker`)
-    .join("/");
+  const streams = pairs.map((p) => `${p.toLocaleLowerCase()}@trade`).join("/");
 
   const url = `wss://stream.binance.com:9443/stream?streams=${streams}`;
 
@@ -25,29 +23,19 @@ export const PricePoller = (pairs: string[]) => {
       try {
         const parsedData = JSON.parse(event.data);
 
-        const tickerData: BookTicker = parsedData.data ?? parsedData;
+        const tickerData: Trade = parsedData.data ?? parsedData;
 
         if (!tickerData?.s) {
           console.log("symbol does not exist");
           return;
         }
 
-        console.log(
-          tickerData.s,
-          Date.now(),
-          tickerData.b,
-          tickerData.B,
-          tickerData.a,
-          tickerData.A
-        );
+        console.log(tickerData.s, tickerData.T, tickerData.p);
 
         const tickData: Tick = {
-          ts: Date.now(),
+          ts: tickerData.T,
           symbol: tickerData.s,
-          bidPrice: parseFloat(tickerData.b),
-          bidQty: parseFloat(tickerData.B),
-          askPrice: parseFloat(tickerData.a),
-          askQty: parseFloat(tickerData.A),
+          price: parseFloat(tickerData.p),
         };
 
         await sendTicksToKafka(tickData);

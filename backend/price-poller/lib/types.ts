@@ -1,17 +1,17 @@
-export type BookTicker = {
-  s: string; // symbol
-  b: string; // best bid price
-  B: string; // bid qty
-  a: string; // best ask price
-  A: string; // ask qty
-  u?: number;
+export type Trade = {
+  e: string; // Event type
+  E: number; // Event time
+  s: string; // Symbol
+  t: number; // Trade ID
+  p: string; // Price
+  q: string; // Quantity
+  T: number; // Trade time
+  m: boolean; // Is the buyer the market maker?
+  M: boolean; // Ignore
 };
 
 export type Tick = {
   ts: number;
   symbol: string;
-  bidPrice: number;
-  bidQty: number;
-  askPrice: number;
-  askQty: number;
+  price: number;
 };
