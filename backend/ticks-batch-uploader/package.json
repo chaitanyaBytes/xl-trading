@@ -1,10 +1,9 @@
 {
-  "name": "price-poller",
+  "name": "ticks-batch-uploader",
   "module": "index.ts",
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@xl-trading/common": "workspace:*",
     "@types/bun": "latest"
   },
   "peerDependencies": {

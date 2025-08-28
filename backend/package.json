@@ -4,7 +4,8 @@
   "workspaces": [
     "packages/*",
     "server",
-    "price-poller"
+    "price-poller",
+    "ticks-batch-uploader"
   ],
   "scripts": {
     "dev": "bun run --filter='*' dev",
