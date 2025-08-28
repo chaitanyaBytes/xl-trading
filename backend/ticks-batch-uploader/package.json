@@ -4,9 +4,14 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@xl-trading/common": "workspace:*",
+    "@types/bun": "latest",
+    "@types/pg": "^8.15.5"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
   }
 }
