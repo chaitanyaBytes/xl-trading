@@ -1,4 +1,5 @@
-import { batchInsertTicks, type Tick } from "./lib/batchProcesser";
+import { batchInsertTicks } from "./lib/batchProcesser";
+import { type Tick } from "@xl-trading/common";
 import { consumer } from "@xl-trading/common";
 
 const BATCH: Tick[] = [];

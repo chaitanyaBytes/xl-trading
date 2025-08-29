@@ -13,5 +13,7 @@ export const config = {
   },
   kafka: {
     broker_url: process.env.KAFKA_BROKER_URL || "localhost:9092",
+    // Suppress KafkaJS partitioner warning
+    partitioner_warning: (process.env.KAFKAJS_NO_PARTITIONER_WARNING = "1"),
   },
 };

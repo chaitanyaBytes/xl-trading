@@ -1,4 +1,4 @@
-import { Kafka } from "kafkajs";
+import { Kafka, Partitioners } from "kafkajs";
 import { config } from "../config/config";
 
 export const kafka = new Kafka({
@@ -10,7 +10,9 @@ export const kafka = new Kafka({
   },
 });
 
-export const producer = kafka.producer();
+export const producer = kafka.producer({
+  createPartitioner: Partitioners.LegacyPartitioner,
+});
 
 export const consumer = kafka.consumer({ groupId: "ticks-ingest" });
 

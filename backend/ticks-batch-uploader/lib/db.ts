@@ -37,7 +37,7 @@ export async function testConnection() {
       await client.query("SELECT NOW()");
 
       client.release();
-      console.log("Database connection test successful");
+      // console.log("Database connection test successful");
     } catch (error) {
       retries--;
       console.log(`Error in connecting with database. Retries left ${retries}`);

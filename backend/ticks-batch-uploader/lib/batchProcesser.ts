@@ -1,11 +1,5 @@
 import { pool } from "./db";
-// import type { Tick } from "@xl-trading/price-poller";
-
-export type Tick = {
-  ts: number;
-  symbol: string;
-  price: number;
-};
+import type { Tick } from "@xl-trading/common";
 
 export async function batchInsertTicks(ticks: Tick[]) {
   const client = await pool.connect();

@@ -1,5 +1,5 @@
 import { producer } from "@xl-trading/common";
-import { type Tick } from "./types";
+import { type Tick } from "@xl-trading/common";
 
 export async function sendTicksToKafka(tickData: Tick) {
   try {

@@ -1,5 +1,5 @@
 import { sendTicksToKafka } from "./kafka-send";
-import type { Trade, Tick } from "./types";
+import type { Trade, Tick } from "@xl-trading/common";
 
 export const PricePoller = (pairs: string[]) => {
   const streams = pairs.map((p) => `${p.toLocaleLowerCase()}@trade`).join("/");
