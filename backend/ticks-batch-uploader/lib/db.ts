@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import { config } from "@xl-trading/common";
 
-const pool = new Pool({
+export const pool = new Pool({
   connectionString: "postgresql://postgres:password@localhost:5432/xltradingdb",
   max: 20,
   idleTimeoutMillis: 30_000,

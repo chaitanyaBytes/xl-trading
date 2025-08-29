@@ -37,7 +37,7 @@
       },
     },
     "price-poller": {
-      "name": "price-poller",
+      "name": "@xl-trading/price-poller",
       "devDependencies": {
         "@types/bun": "latest",
         "@xl-trading/common": "workspace:*",
@@ -71,6 +71,8 @@
     "ticks-batch-uploader": {
       "name": "ticks-batch-uploader",
       "dependencies": {
+        "@xl-trading/common": "workspace:*",
+        "@xl-trading/price-poller": "workspace:*",
         "pg": "^8.16.3",
       },
       "devDependencies": {
@@ -139,6 +141,8 @@
     "@xl-trading/common": ["@xl-trading/common@workspace:packages/common"],
 
     "@xl-trading/db": ["@xl-trading/db@workspace:packages/db"],
+
+    "@xl-trading/price-poller": ["@xl-trading/price-poller@workspace:price-poller"],
 
     "accepts": ["accepts@2.0.0", "", { "dependencies": { "mime-types": "^3.0.0", "negotiator": "^1.0.0" } }, "sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng=="],
 
@@ -333,8 +337,6 @@
     "postgres-date": ["postgres-date@1.0.7", "", {}, "sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q=="],
 
     "postgres-interval": ["postgres-interval@1.2.0", "", { "dependencies": { "xtend": "^4.0.0" } }, "sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ=="],
-
-    "price-poller": ["price-poller@workspace:price-poller"],
 
     "prisma": ["prisma@6.14.0", "", { "dependencies": { "@prisma/config": "6.14.0", "@prisma/engines": "6.14.0" }, "peerDependencies": { "typescript": ">=5.1.0" }, "optionalPeers": ["typescript"], "bin": { "prisma": "build/index.js" } }, "sha512-QEuCwxu+Uq9BffFw7in8In+WfbSUN0ewnaSUKloLkbJd42w6EyFckux4M0f7VwwHlM3A8ssaz4OyniCXlsn0WA=="],
 

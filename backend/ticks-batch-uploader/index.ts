@@ -1,1 +1,53 @@
-console.log("Hello via Bun!");
+import { batchInsertTicks, type Tick } from "./lib/batchProcesser";
+import { consumer } from "@xl-trading/common";
+
+const BATCH: Tick[] = [];
+const BATCH_SIZE = 100;
+const BATCH_TIMEOUT_MS = 5000;
+let timer: NodeJS.Timeout | null = null;
+
+function scheduleFlush() {
+  if (timer) return;
+  timer = setTimeout(async () => {
+    try {
+      if (BATCH.length) {
+        const copy = BATCH.splice(0, BATCH.length);
+        await batchInsertTicks(copy);
+      }
+    } finally {
+      timer = null;
+    }
+  }, BATCH_TIMEOUT_MS);
+}
+
+await consumer.connect();
+await consumer.subscribe({ topic: "ticks" });
+
+await consumer.run({
+  eachMessage: async ({ message }) => {
+    if (!message.value) return;
+    const tick: Tick = JSON.parse(message.value.toString());
+
+    if (!tick) return;
+
+    BATCH.push(tick);
+
+    if (BATCH.length >= BATCH_SIZE) {
+      // Clear any pending timer since we're flushing immediately
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+
+      const copy = BATCH.splice(0, BATCH.length);
+      try {
+        await batchInsertTicks(copy);
+      } catch (error) {
+        console.error("Error in immediate batch insert:", error);
+      }
+      return;
+    }
+
+    scheduleFlush();
+  },
+});

@@ -1,5 +1,5 @@
 {
-  "name": "price-poller",
+  "name": "@xl-trading/price-poller",
   "module": "index.ts",
   "type": "module",
   "private": true,
