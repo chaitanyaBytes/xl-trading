@@ -1,5 +1,5 @@
 {
-  "name": "ticks-batch-uploader",
+  "name": "@xl-trading/ticks-batch-uploader",
   "module": "index.ts",
   "type": "module",
   "private": true,

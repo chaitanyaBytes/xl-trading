@@ -3,7 +3,7 @@ import type { Request, Response, Application } from "express";
 import cors, { type CorsOptions } from "cors";
 import bodyParser from "body-parser";
 import { PORT, NODE_ENV, DEVELOPMENT_URL, PRODUCTION_URL } from "./config";
-import userRouter from "./routes/user";
+import router from "./routes";
 
 const app: Application = express();
 
@@ -30,7 +30,7 @@ app.get("/", (req: Request, res: Response) => {
   res.status(200).send("server is healthy");
 });
 
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1", router);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
