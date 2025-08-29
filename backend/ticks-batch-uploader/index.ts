@@ -32,7 +32,6 @@ async function main() {
 
       if (!tick) return;
 
-      console.log("from consumer", message.value);
       BATCH.push(tick);
 
       if (BATCH.length >= BATCH_SIZE) {
