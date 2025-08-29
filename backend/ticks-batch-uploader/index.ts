@@ -22,33 +22,38 @@ function scheduleFlush() {
 }
 
 await consumer.connect();
-await consumer.subscribe({ topic: "ticks" });
+await consumer.subscribe({ topic: "ticks", fromBeginning: true });
 
-await consumer.run({
-  eachMessage: async ({ message }) => {
-    if (!message.value) return;
-    const tick: Tick = JSON.parse(message.value.toString());
+async function main() {
+  await consumer.run({
+    eachMessage: async ({ message }) => {
+      if (!message.value) return;
+      const tick: Tick = JSON.parse(message.value.toString());
 
-    if (!tick) return;
+      if (!tick) return;
 
-    BATCH.push(tick);
+      console.log("from consumer", message.value);
+      BATCH.push(tick);
 
-    if (BATCH.length >= BATCH_SIZE) {
-      // Clear any pending timer since we're flushing immediately
-      if (timer) {
-        clearTimeout(timer);
-        timer = null;
+      if (BATCH.length >= BATCH_SIZE) {
+        // Clear any pending timer since we're flushing immediately
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+
+        const copy = BATCH.splice(0, BATCH.length);
+        try {
+          await batchInsertTicks(copy);
+        } catch (error) {
+          console.error("Error in immediate batch insert:", error);
+        }
+        return;
       }
 
-      const copy = BATCH.splice(0, BATCH.length);
-      try {
-        await batchInsertTicks(copy);
-      } catch (error) {
-        console.error("Error in immediate batch insert:", error);
-      }
-      return;
-    }
+      scheduleFlush();
+    },
+  });
+}
 
-    scheduleFlush();
-  },
-});
+main();

@@ -9,7 +9,6 @@
     "test": "bun run dist/index.js"
   },
   "devDependencies": {
-    "@xl-trading/common": "workspace:*",
     "@types/bun": "latest",
     "@types/pg": "^8.15.5"
   },

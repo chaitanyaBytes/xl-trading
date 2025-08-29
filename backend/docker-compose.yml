@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -21,3 +21,18 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
+#   timescaledb:
+#     image: timescale/timescaledb:latest-pg16
+#     container_name: timescaledb
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       POSTGRES_DB: xltradingdb
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: password
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#       - ./packages/db/init_timescale.sql:/docker-entrypoint-initdb.d/init_timescale.sql
+
+# volumes:
+#   postgres_data:
