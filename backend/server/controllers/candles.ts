@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { getLatestCandlesInRange, getLatestCandles } from "../lib/candles";
-
+import { pool } from "../db";
 const VALID_ASSETS = ["BTCUSDT", "ETHUSDT", "SOLUSDT"];
 const VALID_INTERVALS = ["1m", "5m", "15m", "1h"];
 
@@ -53,5 +53,29 @@ export const getCandles = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("getCandles error:", error);
     res.status(500).json({ success: false, error: "Failed to fetch candles" });
+  }
+};
+
+export const getIntervals = async (_req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    data: ["1m", "5m", "15m", "1h"],
+  });
+};
+
+export const getAssets = async (_req: Request, res: Response) => {
+  try {
+    const client = await pool.connect();
+    try {
+      const r = await client.query(
+        `SELECT DISTINCT asset FROM ticks ORDER BY symbol`
+      );
+      res.json({ success: true, data: r.rows.map((x: any) => x.symbol) });
+    } finally {
+      client.release();
+    }
+  } catch (e) {
+    console.error("assets:", e);
+    res.status(500).json({ success: false, error: "Failed to fetch assets" });
   }
 };
