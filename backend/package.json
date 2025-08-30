@@ -5,7 +5,8 @@
     "packages/*",
     "server",
     "price-poller",
-    "ticks-batch-uploader"
+    "ticks-batch-uploader",
+    "wss"
   ],
   "scripts": {
     "dev": "bun run --filter='*' dev",

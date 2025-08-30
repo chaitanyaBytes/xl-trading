@@ -1,0 +1,21 @@
+{
+  "name": "@xl-trading/wss",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch run index.ts",
+    "build": "bun build index.ts --outdir dist",
+    "test": "bun run dist/index.js"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/ioredis": "^5.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@xl-trading/common": "workspace:*"
+  }
+}

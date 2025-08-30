@@ -15,3 +15,12 @@ export type Tick = {
   symbol: string;
   price: number;
 };
+
+export type LivePriceFeed = {
+  ts: number;
+  marketPrice: number;
+  symbol: string;
+  askPrice: number;
+  bidPrice: number;
+  spread: number;
+};
