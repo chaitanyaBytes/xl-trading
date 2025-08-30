@@ -17,7 +17,7 @@ const toScaledInt = (value: number, decimals: number): bigint => {
 
 const userBalances = new Map<string, UserBalance>();
 
-export const initalizeUserBalance = (userId: string) => {
+export const initializeUserBalance = (userId: string) => {
   const defaultUserBalance: UserBalance = {
     userId: userId,
     usdt: { qty: BigInt(10000), decimals: 2 },
@@ -31,11 +31,11 @@ export const initalizeUserBalance = (userId: string) => {
   return defaultUserBalance;
 };
 
-export const getUSerBalance = (userId: string) => {
+export const getUserBalance = (userId: string) => {
   let balance = userBalances.get(userId);
 
   if (!balance) {
-    balance = initalizeUserBalance(userId);
+    balance = initializeUserBalance(userId);
   }
 
   return balance;
