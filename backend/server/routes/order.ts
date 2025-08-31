@@ -4,12 +4,13 @@ import {
   placeCloseOrder,
   getOrders,
 } from "../controllers/orders";
+import { authMiddleware } from "../middleware/auth";
 const orderRouter = express.Router();
 
-orderRouter.post("/open", placeOpenOrder);
+orderRouter.post("/open", authMiddleware, placeOpenOrder);
 
-orderRouter.post("/close", placeCloseOrder);
+orderRouter.post("/close", authMiddleware, placeCloseOrder);
 
-orderRouter.get("/", getOrders);
+orderRouter.get("/", authMiddleware, getOrders);
 
 export default orderRouter;

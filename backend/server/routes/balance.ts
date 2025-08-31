@@ -4,6 +4,6 @@ import { authMiddleware } from "../middleware/auth";
 
 const balanceRouter = express.Router();
 
-// balanceRouter.get("/", getBalance);
+balanceRouter.get("/", authMiddleware, getBalance);
 
 export default balanceRouter;

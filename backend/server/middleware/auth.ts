@@ -13,7 +13,7 @@ export interface AuthRequest extends Request {
 }
 
 export const authMiddleware = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {

@@ -1,9 +1,9 @@
-import { config, consumer } from "@xl-trading/common";
+import { config, wssConsumer } from "@xl-trading/common";
 import type { Tick, LivePriceFeed } from "@xl-trading/common";
 import type { ServerWebSocket } from "bun";
 
 const PORT = config.ws.port;
-const SPREAD_BASIS_POINTS = 200n; // 200 bps = 1%
+const SPREAD_BASIS_POINTS = 100n; // 200 bps = 1%
 const DECIMALS = 6;
 
 // TODO: fix the websocket type later
@@ -12,7 +12,7 @@ const wsToId = new WeakMap<ServerWebSocket<unknown>, string>();
 
 const latestPrices = new Map<string, LivePriceFeed>();
 
-function applySpread(price: bigint): { ask: bigint; bid: bigint } {
+export function applySpread(price: bigint): { ask: bigint; bid: bigint } {
   // ask = price * (1 + spread/2)
   // bid = price * (1 - spread/2)
 
@@ -24,10 +24,10 @@ function applySpread(price: bigint): { ask: bigint; bid: bigint } {
 }
 
 // kafka consumer for live price feed
-consumer.connect();
-await consumer.subscribe({ topic: "ticks" });
+await wssConsumer.connect();
+await wssConsumer.subscribe({ topic: "ticks" });
 
-await consumer.run({
+await wssConsumer.run({
   eachMessage: async ({ message }) => {
     if (!message.value) return;
 
@@ -37,7 +37,6 @@ await consumer.run({
 
     const { ask, bid } = applySpread(BigInt(tick.price));
 
-    console.log(`ask ${ask}, bid: ${bid}`);
     const livePriceFeed: LivePriceFeed = {
       ts: tick.ts,
       symbol: tick.symbol,

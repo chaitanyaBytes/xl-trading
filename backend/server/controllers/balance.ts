@@ -1,10 +1,9 @@
-import type { Response } from "express";
-import type { AuthRequest } from "../middleware/auth";
+import type { Response, Request } from "express";
 import { getUserBalance } from "../lib/balance";
 import { sendJsonBigInt } from "../utils/jsonBigint";
 
 export const getBalance = async (
-  req: AuthRequest,
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {
@@ -15,6 +14,7 @@ export const getBalance = async (
         success: false,
         error: "userId parameter is required",
       });
+      return;
     }
 
     const balance = getUserBalance(userId);

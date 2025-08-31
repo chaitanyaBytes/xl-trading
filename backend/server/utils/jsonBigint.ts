@@ -7,4 +7,5 @@ export function sendJsonBigInt(res: Response, payload: unknown) {
       typeof v === "bigint" ? v.toString() : v
     )
   );
+  return;
 }

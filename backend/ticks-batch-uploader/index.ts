@@ -46,7 +46,8 @@ async function main() {
 
         const copy = BATCH.splice(0, BATCH.length);
         try {
-          await batchInsertTicks(copy);
+          const rowsInserted = await batchInsertTicks(copy);
+          console.log(`Inserted ${rowsInserted} rows in db`);
         } catch (error) {
           console.error("Error in immediate batch insert:", error);
         }

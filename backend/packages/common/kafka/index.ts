@@ -15,6 +15,12 @@ export const producer = kafka.producer({
 });
 
 export const consumer = kafka.consumer({ groupId: "ticks-ingest" });
+export const serverConsumer = kafka.consumer({
+  groupId: "ticks-ingest-server",
+});
+export const wssConsumer = kafka.consumer({
+  groupId: "ticks-ingest-wss",
+});
 
 let isProducerConnected = false;
 
