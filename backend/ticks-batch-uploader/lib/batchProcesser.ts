@@ -8,17 +8,21 @@ export async function batchInsertTicks(ticks: Tick[]) {
     await client.query("BEGIN");
 
     const placeholders = ticks
-      .map((_, idx) => `($${idx * 3 + 1}, $${idx * 3 + 2}, $${idx * 3 + 3})`)
+      .map(
+        (_, idx) =>
+          `($${idx * 4 + 1}, $${idx * 4 + 2}, $${idx * 4 + 3}, $${idx * 4 + 4})`
+      )
       .join(", ");
 
     const flatValues = ticks.flatMap((tick) => [
       new Date(tick.ts),
       tick.symbol,
       tick.price,
+      tick.decimals,
     ]);
 
     const res = await client.query(
-      `INSERT INTO ticks (ts, symbol, price) VALUES ${placeholders}`,
+      `INSERT INTO ticks (ts, symbol, price, decimals) VALUES ${placeholders}`,
       flatValues
     );
 

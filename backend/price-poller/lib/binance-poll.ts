@@ -1,6 +1,13 @@
 import { sendTicksToKafka } from "./kafka-send";
 import type { Trade, Tick } from "@xl-trading/common";
 
+export const DECIMALS = 6;
+
+export function toScaledInt(priceStr: string, decimals: number = 6) {
+  const price: number = Number(priceStr);
+  return BigInt(Math.round(price * Math.pow(10, DECIMALS)));
+}
+
 export const PricePoller = (pairs: string[]) => {
   const streams = pairs.map((p) => `${p.toLocaleLowerCase()}@trade`).join("/");
 
@@ -30,12 +37,13 @@ export const PricePoller = (pairs: string[]) => {
           return;
         }
 
-        console.log(tickerData.s, tickerData.T, tickerData.p);
+        console.log(tickerData.s, tickerData.T, toScaledInt(tickerData.p));
 
         const tickData: Tick = {
           ts: tickerData.T,
           symbol: tickerData.s,
-          price: parseFloat(tickerData.p),
+          price: toScaledInt(tickerData.p),
+          decimals: DECIMALS,
         };
 
         await sendTicksToKafka(tickData);

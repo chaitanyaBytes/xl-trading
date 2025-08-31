@@ -1,4 +1,4 @@
-import { producer } from "@xl-trading/common";
+import { producer, parseBigintString } from "@xl-trading/common";
 import { type Tick } from "@xl-trading/common";
 
 export async function sendTicksToKafka(tickData: Tick) {
@@ -8,7 +8,7 @@ export async function sendTicksToKafka(tickData: Tick) {
       messages: [
         {
           key: tickData.symbol,
-          value: JSON.stringify(tickData),
+          value: parseBigintString(tickData),
           timestamp: tickData.ts.toString(),
         },
       ],

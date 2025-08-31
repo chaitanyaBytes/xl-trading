@@ -13,14 +13,16 @@ export type Trade = {
 export type Tick = {
   ts: number;
   symbol: string;
-  price: number;
+  price: bigint;
+  decimals: number;
 };
 
 export type LivePriceFeed = {
   ts: number;
-  marketPrice: number;
+  marketPrice: bigint;
   symbol: string;
-  askPrice: number;
-  bidPrice: number;
-  spread: number;
+  askPrice: bigint;
+  bidPrice: bigint;
+  spreadBP: bigint;
+  decimals: number;
 };

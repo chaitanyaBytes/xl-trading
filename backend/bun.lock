@@ -88,7 +88,6 @@
       "name": "@xl-trading/wss",
       "dependencies": {
         "@xl-trading/common": "workspace:*",
-        "ioredis": "^5.7.0",
       },
       "devDependencies": {
         "@types/bun": "latest",

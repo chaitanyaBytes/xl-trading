@@ -5,7 +5,8 @@ CREATE EXTENSION IF NOT EXISTS timescaledb;
 CREATE TABLE ticks (
     ts TIMESTAMPTZ NOT NULL,
     symbol TEXT NOT NULL,
-    price DOUBLE PRECISION NOT NULL
+    price BIGINT NOT NULL,      
+    decimals INTEGER NOT NULL
 );
 
 CREATE INDEX ON ticks(symbol, ts);

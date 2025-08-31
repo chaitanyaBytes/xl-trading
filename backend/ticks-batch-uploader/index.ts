@@ -28,7 +28,10 @@ async function main() {
   await consumer.run({
     eachMessage: async ({ message }) => {
       if (!message.value) return;
-      const tick: Tick = JSON.parse(message.value.toString());
+      const tick: Tick = JSON.parse(message.value.toString(), (key, value) => {
+        if (key === "price" && typeof value === "string") return BigInt(value);
+        return value;
+      });
 
       if (!tick) return;
 
