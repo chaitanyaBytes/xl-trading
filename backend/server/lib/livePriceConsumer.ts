@@ -32,16 +32,13 @@ try {
 
   await serverConsumer.run({
     eachMessage: async ({ message }) => {
-      console.log("Received message from Kafka");
       if (!message.value) return;
 
       const tick: Tick = JSON.parse(message.value.toString());
       if (!tick) return;
 
-      console.log(`Processing tick for ${tick.symbol}: ${tick.price}`);
       const { ask, bid } = applySpread(BigInt(tick.price));
 
-      console.log(`bid price: ${bid}, ask price: ${ask}`);
       const livePriceFeed: LivePriceFeed = {
         ts: tick.ts,
         symbol: tick.symbol,
@@ -53,12 +50,6 @@ try {
       };
 
       latestPrices.set(tick.symbol, livePriceFeed);
-      console.log(`Updated price for ${tick.symbol}`);
-      console.log(
-        `this is the latest pricee: ${
-          latestPrices.get(tick.symbol)?.marketPrice
-        }`
-      );
     },
   });
 } catch (error) {

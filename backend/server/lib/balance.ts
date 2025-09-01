@@ -21,9 +21,9 @@ export const initializeUserBalance = (userId: string) => {
   const defaultUserBalance: UserBalance = {
     userId: userId,
     usdt: { qty: BigInt(10000), decimals: 2 },
-    btc: { qty: BigInt(0), decimals: 8 },
-    eth: { qty: BigInt(0), decimals: 18 },
-    sol: { qty: BigInt(0), decimals: 9 },
+    btc: { qty: BigInt(0), decimals: 6 },
+    eth: { qty: BigInt(0), decimals: 6 },
+    sol: { qty: BigInt(0), decimals: 6 },
   };
 
   userBalances.set(userId, defaultUserBalance);

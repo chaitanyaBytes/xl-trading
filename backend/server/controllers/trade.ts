@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { getLatestPrice } from "../lib/livePriceConsumer";
 import { sendJsonBigInt } from "../utils/jsonBigint";
 
-export const placeOpenOrder = async (req: Request, res: Response) => {
+export const openTrade = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
 
@@ -14,7 +14,8 @@ export const placeOpenOrder = async (req: Request, res: Response) => {
       return;
     }
 
-    console.log("before live feed");
+    const { asset, type, margin, leverage, stopLoss, takeProfit } = req.body;
+
     const livePriceFeed = getLatestPrice("BTCUSDT");
 
     if (!livePriceFeed) {
@@ -43,6 +44,6 @@ export const placeOpenOrder = async (req: Request, res: Response) => {
   }
 };
 
-export const placeCloseOrder = async (req: Request, res: Response) => {};
+export const closeTrade = async (req: Request, res: Response) => {};
 
-export const getOrders = async (req: Request, res: Response) => {};
+export const getOpenTrades = async (req: Request, res: Response) => {};
