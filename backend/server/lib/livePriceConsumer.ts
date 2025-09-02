@@ -5,7 +5,7 @@ const SPREAD_BASIS_POINTS = 100n; // 100 bps = 1%
 const DECIMALS = 6;
 
 // In-memory price store
-const latestPrices = new Map<string, LivePriceFeed>();
+export const latestPrices = new Map<string, LivePriceFeed>();
 
 export function applySpread(price: bigint): { ask: bigint; bid: bigint } {
   const halfSpread = SPREAD_BASIS_POINTS / 2n;
@@ -15,11 +15,11 @@ export function applySpread(price: bigint): { ask: bigint; bid: bigint } {
   return { ask, bid };
 }
 
-export function getLatestPrice(symbol: string): LivePriceFeed | null {
+export function getLatestPriceFeed(symbol: string): LivePriceFeed | null {
   return latestPrices.get(symbol) || null;
 }
 
-export function getAllLatestPrices(): Map<string, LivePriceFeed> {
+export function getAllLatestPriceFeeds(): Map<string, LivePriceFeed> {
   return new Map(latestPrices);
 }
 

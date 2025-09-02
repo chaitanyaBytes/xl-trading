@@ -1,6 +1,22 @@
 import type { Request, Response } from "express";
-import { getLatestPrice } from "../lib/livePriceConsumer";
-import { sendJsonBigInt } from "../utils/jsonBigint";
+import { getLatestPriceFeed } from "../lib/livePriceConsumer";
+import {
+  ASSETS,
+  replacer,
+  scaleToBigint,
+  sendJsonBigInt,
+} from "../utils/jsonBigint";
+import type { Order } from "../lib/userTradingStore";
+import { userTradingStore } from "../lib/userTradingStore";
+
+export interface OpenOrderReq {
+  asset: string;
+  type: "buy" | "sell";
+  margin: number;
+  leverage: number;
+  stopLoss?: number;
+  takeProfit?: number;
+}
 
 export const openTrade = async (req: Request, res: Response) => {
   try {
@@ -14,25 +30,72 @@ export const openTrade = async (req: Request, res: Response) => {
       return;
     }
 
-    const { asset, type, margin, leverage, stopLoss, takeProfit } = req.body;
+    const {
+      asset,
+      type: side,
+      margin,
+      leverage,
+      stopLoss,
+      takeProfit,
+    }: OpenOrderReq = req.body;
 
-    const livePriceFeed = getLatestPrice("BTCUSDT");
-
-    if (!livePriceFeed) {
+    if (
+      !ASSETS.includes(asset) ||
+      !["buy", "sell"].includes(side) ||
+      !margin ||
+      margin <= 0 ||
+      !leverage ||
+      leverage < 1
+    ) {
+      console.log("Invalid Inputs: ", asset, side, leverage, margin);
       res.status(400).json({
         success: false,
-        error: "No price data available for BTCUSDT",
+        error: `Incorrect inputs`,
+      });
+    }
+
+    const scaledMargin: bigint = scaleToBigint(margin, 2);
+    const symbol = `${asset.toUpperCase()}USDT`;
+    const latestPriceFeed = getLatestPriceFeed(symbol);
+
+    if (!latestPriceFeed) {
+      res.status(400).json({
+        success: false,
+        error: `Prices not available for the asset ${symbol}`,
       });
       return;
     }
 
-    console.log("live price feed from order: ", livePriceFeed.askPrice);
+    let currentPrice: bigint =
+      side === "buy"
+        ? BigInt(latestPriceFeed.askPrice)
+        : BigInt(latestPriceFeed.bidPrice);
 
-    sendJsonBigInt(res, {
-      success: true,
-      livePriceFeed,
-      meta: { timestamp: new Date(), userId },
-    });
+    if (!currentPrice || currentPrice <= 0n) {
+      res.status(400).json({
+        success: false,
+        error: "",
+      });
+    }
+
+    const order: Order = {
+      orderId: crypto.randomUUID(),
+      userId: userId,
+      symbol: symbol,
+      type: "open",
+      side: side,
+      orderType: "market",
+      size: scaledMargin * BigInt(leverage),
+      leverage: leverage,
+      status: "pending",
+      timestamp: Date.now(),
+    };
+
+    userTradingStore.addOrder(order);
+
+    const executedOrderRes = userTradingStore.executeOrder(order, currentPrice);
+
+    sendJsonBigInt(res, executedOrderRes, executedOrderRes.success ? 200 : 400);
 
     return;
   } catch (error: any) {
