@@ -46,7 +46,7 @@ export interface Position {
 
 export interface RiskConfig {
   maxLeverage: number;
-  maintainenceMarginRate: number;
+  maintenanceMarginRate: number;
   liquidationMarginRate: number;
   minPositionSize: bigint;
   maxPositionSize: bigint;
@@ -61,7 +61,7 @@ class UserTradingStore {
 
   private riskConfig: RiskConfig = {
     maxLeverage: 100,
-    maintainenceMarginRate: 0.05,
+    maintenanceMarginRate: 0.05,
     liquidationMarginRate: 0.1,
     minPositionSize: 1000000n,
     maxPositionSize: 1000000000000n,
@@ -135,7 +135,7 @@ class UserTradingStore {
 
     if (order.type === "open" && order.executedPrice) {
       const requiredMargin =
-        (order.size * order.executedPrice) / BigInt(order.leverage) / 1000000n;
+        (order.size * order.executedPrice) / BigInt(order.leverage);
       if (userBalance.availableBalance < requiredMargin) {
         return { valid: false, error: "Insufficient margin" };
       }
@@ -205,12 +205,21 @@ class UserTradingStore {
     return this.openPositions.get(userId) || [];
   }
 
-  //   getPositionsAtRisk(userId: string): Position[] {
-  //     const positions = this.getUserPositions(userId);
-  //     return positions.filter(p => {
-  //         const marginRatio = Math.abs(Number(positions))
-  //     })
-  //   }
+  getPositionsAtRisk(
+    userId: string,
+    currentPrices: Map<string, bigint>
+  ): Position[] {
+    const positions = this.getUserPositions(userId);
+    return positions.filter((position) => {
+      const currentPrice = currentPrices.get(position.symbol);
+      if (!currentPrice) return false;
+
+      const unrealizedPnl = this.calculateUnrealizedPnL(position, currentPrice);
+      const marginRatio =
+        Math.abs(Number(unrealizedPnl)) / Number(position.margin);
+      return marginRatio > this.riskConfig.maintenanceMarginRate;
+    });
+  }
 
   addOrder(order: Order): void {
     const userOrders = this.userOrders.get(order.userId) || [];
@@ -225,6 +234,47 @@ class UserTradingStore {
 
   getOrderById(orderId: string): Order | null {
     return this.orderById.get(orderId) || null;
+  }
+
+  executeOrder(
+    order: Order,
+    executionPrice: bigint
+  ): { success: boolean; error?: string; position?: Position } {
+    const userBalance = this.getUserBalance(order.userId);
+    if (!userBalance) {
+      return { success: false, error: "User balance not found" };
+    }
+
+    order.executedPrice = executionPrice;
+    order.executedAt = Date.now();
+    order.status = "filled";
+
+    if (order.type === "open") {
+      const margin = (order.size * executionPrice) / BigInt(order.leverage);
+
+      const position: Position = {
+        positionId: crypto.randomUUID(),
+        userId: order.userId,
+        symbol: order.symbol,
+        side: order.side,
+        openPrice: executionPrice,
+        leverage: order.leverage,
+        margin: margin,
+        status: "open",
+        openedAt: Date.now(),
+        liquidationPrice: 0n,
+        size: order.size,
+        realizedPnl: 0n,
+      };
+
+      this.openPosition(position);
+      return { success: true, position };
+    }
+
+    if (order.type === "close") {
+    }
+
+    return { success: false, error: "Error in order execution" };
   }
 
   getUserBalance(userId: string): UserBalance | null {
@@ -263,7 +313,7 @@ class UserTradingStore {
     return {
       ...baseBalance,
       lockedMargin,
-      totalBalance: baseBalance.availableBalance + unrealizedPnl,
+      totalBalance: baseBalance.availableBalance + lockedMargin + unrealizedPnl,
     };
   }
 }
